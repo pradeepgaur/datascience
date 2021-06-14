@@ -1,44 +1,117 @@
-# Kernel PCA
+#!/usr/bin/env python
+# coding: utf-8
 
-# Importing the libraries
+# In[1]:
+
+
+# Configurations
+DATA_FILE_PATH = "Social_Network_Ads.csv"
+PROJECT_NAME = "project_alpha"
+
+
+# In[2]:
+
+
+#Import drive
+from google.colab import drive
+drive.mount("/content/drive")
+
+
+# In[3]:
+
+
+BASE_PATH = '/content/drive/My Drive/' + PROJECT_NAME + '/datascience/'
+DATA_FILE_PATH = BASE_PATH + 'data/' + DATA_FILE_PATH
+
+DIRECTORY_PATH =  BASE_PATH + 'dimensional_reduction/'
+get_ipython().magic(u'cd {DIRECTORY_PATH}')
+
+
+# # Kernel PCA
+
+# ## Importing the libraries
+
+# In[4]:
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Importing the dataset
-dataset = pd.read_csv('Social_Network_Ads.csv')
+
+# ## Importing the dataset
+
+# In[5]:
+
+
+dataset = pd.read_csv(DATA_FILE_PATH)
 X = dataset.iloc[:, [2, 3]].values
 y = dataset.iloc[:, -1].values
 
-# Feature Scaling
+
+# ## Feature Scaling
+
+# In[6]:
+
+
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X = sc.fit_transform(X)
 
-# Splitting the dataset into the Training set and Test set
+
+# ## Splitting the dataset into the Training set and Test set
+
+# In[7]:
+
+
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 0)
 
-# Applying Kernel PCA
+
+# ## Applying Kernel PCA
+
+# In[8]:
+
+
 from sklearn.decomposition import KernelPCA
 kpca = KernelPCA(n_components = 2, kernel = 'rbf')
 X_train = kpca.fit_transform(X_train)
 X_test = kpca.transform(X_test)
 
-# Training the Logistic Regression model on the Training set
+
+# ## Training the Logistic Regression model on the Training set
+
+# In[9]:
+
+
 from sklearn.linear_model import LogisticRegression
 classifier = LogisticRegression(random_state = 0)
 classifier.fit(X_train, y_train)
 
-# Predicting the Test set results
+
+# ## Predicting the Test set results
+
+# In[10]:
+
+
 y_pred = classifier.predict(X_test)
 
-# Making the Confusion Matrix
+
+# ## Making the Confusion Matrix
+
+# In[11]:
+
+
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
 
-# Visualising the Training set results
+
+# ## Visualising the Training set results
+
+# In[12]:
+
+
 from matplotlib.colors import ListedColormap
 X_set, y_set = X_train, y_train
 X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
@@ -56,7 +129,12 @@ plt.ylabel('Estimated Salary')
 plt.legend()
 plt.show()
 
-# Visualising the Test set results
+
+# ## Visualising the Test set results
+
+# In[13]:
+
+
 from matplotlib.colors import ListedColormap
 X_set, y_set = X_test, y_test
 X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
@@ -73,3 +151,4 @@ plt.xlabel('Age')
 plt.ylabel('Estimated Salary')
 plt.legend()
 plt.show()
+

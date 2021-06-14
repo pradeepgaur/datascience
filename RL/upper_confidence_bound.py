@@ -1,14 +1,57 @@
-# Upper Confidence Bound (UCB)
+#!/usr/bin/env python
+# coding: utf-8
 
-# Importing the libraries
+# In[1]:
+
+
+# Configurations
+DATA_FILE_PATH = "Ads_CTR_Optimisation.csv"
+PROJECT_NAME = "project_alpha"
+
+
+# In[2]:
+
+
+#Import drive
+from google.colab import drive
+drive.mount("/content/drive")
+
+
+# In[3]:
+
+
+BASE_PATH = '/content/drive/My Drive/' + PROJECT_NAME + '/datascience/'
+DATA_FILE_PATH = BASE_PATH + 'data/' + DATA_FILE_PATH
+
+DIRECTORY_PATH =  BASE_PATH + 'RL/'
+get_ipython().magic(u'cd {DIRECTORY_PATH}')
+
+
+# # Upper Confidence Bound (UCB)
+
+# ## Importing the libraries
+
+# In[4]:
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Importing the dataset
-dataset = pd.read_csv('Ads_CTR_Optimisation.csv')
 
-# Implementing UCB
+# ## Importing the dataset
+
+# In[5]:
+
+
+dataset = pd.read_csv(DATA_FILE_PATH)
+
+
+# ## Implementing UCB
+
+# In[6]:
+
+
 import math
 N = 10000
 d = 10
@@ -35,9 +78,15 @@ for n in range(0, N):
     sums_of_rewards[ad] = sums_of_rewards[ad] + reward
     total_reward = total_reward + reward
 
-# Visualising the results
+
+# ## Visualising the results
+
+# In[7]:
+
+
 plt.hist(ads_selected)
 plt.title('Histogram of ads selections')
 plt.xlabel('Ads')
 plt.ylabel('Number of times each ad was selected')
 plt.show()
+

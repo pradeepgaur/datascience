@@ -1,44 +1,117 @@
-# Grid Search
+#!/usr/bin/env python
+# coding: utf-8
 
-# Importing the libraries
+# In[ ]:
+
+
+# Configurations
+DATA_FILE_PATH = "Social_Network_Ads.csv"
+PROJECT_NAME = "project_alpha"
+
+
+# In[ ]:
+
+
+#Import drive
+from google.colab import drive
+drive.mount("/content/drive")
+
+
+# In[ ]:
+
+
+BASE_PATH = '/content/drive/My Drive/' + PROJECT_NAME + '/datascience/'
+DATA_FILE_PATH = BASE_PATH + 'data/' + DATA_FILE_PATH
+
+DIRECTORY_PATH =  BASE_PATH + 'model_selection/'
+get_ipython().magic(u'cd {DIRECTORY_PATH}')
+
+
+# # Grid Search
+
+# ## Importing the libraries
+
+# In[ ]:
+
+
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
-# Importing the dataset
-dataset = pd.read_csv('Social_Network_Ads.csv')
+
+# ## Importing the dataset
+
+# In[ ]:
+
+
+dataset = pd.read_csv(DATA_FILE_PATH)
 X = dataset.iloc[:, [2, 3]].values
 y = dataset.iloc[:, -1].values
 
-# Feature Scaling
+
+# ## Feature Scaling
+
+# In[ ]:
+
+
 from sklearn.preprocessing import StandardScaler
 sc = StandardScaler()
 X = sc.fit_transform(X)
 
-# Splitting the dataset into the Training set and Test set
+
+# ## Splitting the dataset into the Training set and Test set
+
+# In[ ]:
+
+
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.25, random_state = 0)
 
-# Training the Kernel SVM model on the Training set
+
+# ## Training the Kernel SVM model on the Training set
+
+# In[ ]:
+
+
 from sklearn.svm import SVC
 classifier = SVC(kernel = 'rbf', random_state = 0)
 classifier.fit(X_train, y_train)
 
-# Predicting the Test set results
+
+# ## Predicting the Test set results
+
+# In[ ]:
+
+
 y_pred = classifier.predict(X_test)
 
-# Making the Confusion Matrix
+
+# ## Making the Confusion Matrix
+
+# In[ ]:
+
+
 from sklearn.metrics import confusion_matrix
 cm = confusion_matrix(y_test, y_pred)
 print(cm)
 
-# Applying k-Fold Cross Validation
+
+# ## Applying k-Fold Cross Validation
+
+# In[ ]:
+
+
 from sklearn.model_selection import cross_val_score
 accuracies = cross_val_score(estimator = classifier, X = X_train, y = y_train, cv = 10)
 print("Accuracy: {:.2f} %".format(accuracies.mean()*100))
 print("Standard Deviation: {:.2f} %".format(accuracies.std()*100))
 
-# Applying Grid Search to find the best model and the best parameters
+
+# ## Applying Grid Search to find the best model and the best parameters
+
+# In[ ]:
+
+
 from sklearn.model_selection import GridSearchCV
 parameters = [{'C': [1, 10, 100, 1000], 'kernel': ['linear']},
               {'C': [1, 10, 100, 1000], 'kernel': ['rbf'], 'gamma': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]}]
@@ -53,7 +126,12 @@ best_parameters = grid_search.best_params_
 print("Best Accuracy: {:.2f} %".format(best_accuracy*100))
 print("Best Parameters:", best_parameters)
 
-# Visualising the Training set results
+
+# ## Visualising the Training set results
+
+# In[ ]:
+
+
 from matplotlib.colors import ListedColormap
 X_set, y_set = X_train, y_train
 X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
@@ -71,7 +149,12 @@ plt.ylabel('Estimated Salary')
 plt.legend()
 plt.show()
 
-# Visualising the Test set results
+
+# ## Visualising the Test set results
+
+# In[ ]:
+
+
 from matplotlib.colors import ListedColormap
 X_set, y_set = X_test, y_test
 X1, X2 = np.meshgrid(np.arange(start = X_set[:, 0].min() - 1, stop = X_set[:, 0].max() + 1, step = 0.01),
@@ -88,3 +171,4 @@ plt.xlabel('Age')
 plt.ylabel('Estimated Salary')
 plt.legend()
 plt.show()
+
